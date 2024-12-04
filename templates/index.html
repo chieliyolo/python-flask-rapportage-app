@@ -12,7 +12,11 @@
             flex-direction: column;
             align-items: center;
             margin: 0;
-            padding: 0;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            margin: 10px 0;
         }
 
         /* Styling van de content sectie */
@@ -20,6 +24,16 @@
             display: flex;
             gap: 2rem;
             align-items: flex-start; /* Zorg dat de bovenkanten uitlijnen */
+            margin-top: 20px;
+            flex-wrap: wrap; /* Zorg dat de items naar een nieuwe rij gaan op kleine schermen */
+        }
+
+        /* Grafiek styling */
+        img {
+            max-width: 100%;
+            height: auto;
+            width: 40vw; /* Breedte relatief aan viewport breedte */
+            min-width: 300px; /* Zorg dat de grafiek niet te klein wordt */
         }
 
         /* Tabel styling */
@@ -44,6 +58,10 @@
                 align-items: center;
             }
 
+            img {
+                width: 80%; /* Grafiek neemt meer ruimte in op kleinere schermen */
+            }
+
             table {
                 width: 90%; /* Tabel wordt smaller */
             }
@@ -62,7 +80,7 @@
         <!-- Grafiek -->
         <div>
             <h2>Grafiek van de werkuren per OCMW</h2>
-            <img src="{{ graph_url }}" alt="Spreiding werkuren per OCMW" style="width: 100%; max-width: 400px;"> <!-- Afmetingen grafiek -->
+            <img src="{{ graph_url }}" alt="Spreiding werkuren per OCMW">
         </div>
 
         <!-- Tabel -->

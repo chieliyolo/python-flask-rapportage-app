@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_file
+from flask import Flask, request, render_template
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
@@ -27,7 +27,7 @@ def process_file():
     totaal_aantal = round(project_som.sum(), 2)
 
     # Maak het taartdiagram
-    plt.figure(figsize=(10, 10))
+    plt.figure(figsize=(6, 4))  # Pas de grootte van de grafiek aan
     plt.pie(project_som, labels=project_som.index, autopct=lambda p: f'{p * totaal_aantal / 100:.2f}', startangle=90)
     plt.title(f'Spreiding werkuren per OCMW (Totaal: {totaal_aantal})')
     plt.axis('equal')
@@ -35,7 +35,7 @@ def process_file():
 
     # Sla de grafiek op in de static-map
     graph_path = os.path.join('static', 'graph.png')
-    plt.savefig(graph_path, format='png')
+    plt.savefig(graph_path, format='png', bbox_inches='tight')  # Sla de grafiek op
     plt.close()
 
     # Converteer de gegevens naar een lijst met dicts en rond af
