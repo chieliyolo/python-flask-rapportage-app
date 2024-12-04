@@ -2,7 +2,6 @@ from flask import Flask, request, render_template, send_file
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
-from io import BytesIO
 
 app = Flask(__name__)
 
@@ -34,21 +33,18 @@ def process_file():
     plt.axis('equal')
     plt.tight_layout()
 
-    # Sla de figuur op in geheugen
-    img = BytesIO()
-    plt.savefig(img, format='png')
+    # Sla de grafiek op in de static-map
+    graph_path = os.path.join('static', 'graph.png')
+    plt.savefig(graph_path, format='png')
     plt.close()
-    img.seek(0)
 
-    # Converteer de gegevens naar een lijst met dicts (geschikt voor HTML-rendering)
-    tabel_data = project_som.reset_index().rename(columns={'Benaming project': 'Project', 'Aantal': 'Werkuren'}).to_dict(orient='records')
+    # Converteer de gegevens naar een lijst met dicts en rond af
+    tabel_data = project_som.reset_index().rename(columns={'Benaming project': 'Project', 'Aantal': 'Werkuren'})
+    tabel_data['Werkuren'] = tabel_data['Werkuren'].round(2)  # Rond de getallen af op 2 decimalen
+    tabel_data = tabel_data.to_dict(orient='records')
 
     # Geef de grafiek en tabel terug aan de pagina
     return render_template('index.html', graph_url='/static/graph.png', tabel_data=tabel_data)
-
-@app.route('/static/graph.png')
-def graph():
-    return send_file('static/graph.png', mimetype='image/png')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
