@@ -5,25 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grafiek en Tabel Weergave</title>
     <style>
+        /* Algemeen font styling */
         body {
+            font-family: Calibri, Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
+            margin: 0;
+            padding: 0;
         }
+
+        /* Styling van de content sectie */
         .content {
             display: flex;
             gap: 2rem;
+            align-items: flex-start; /* Zorg dat de bovenkanten uitlijnen */
         }
+
+        /* Tabel styling */
         table {
             border-collapse: collapse;
             width: 50%;
         }
+
         table, th, td {
             border: 1px solid black;
         }
+
         th, td {
             padding: 8px;
             text-align: center;
+        }
+
+        /* Mediaquery voor kleinere schermen */
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            table {
+                width: 90%; /* Tabel wordt smaller */
+            }
         }
     </style>
 </head>
@@ -39,12 +62,12 @@
         <!-- Grafiek -->
         <div>
             <h2>Grafiek van de werkuren per OCMW</h2>
-            <img src="{{ graph_url }}" alt="Spreiding werkuren per OCMW">
+            <img src="{{ graph_url }}" alt="Spreiding werkuren per OCMW" style="width: 100%; max-width: 400px;"> <!-- Afmetingen grafiek -->
         </div>
 
         <!-- Tabel -->
         <div>
-            <h2>Tabel van werkuren</h2>
+            <h2>Tabel van werkuren per OCMW</h2>
             <table>
                 <thead>
                     <tr>
