@@ -27,7 +27,7 @@ def process_file():
     totaal_aantal = round(project_som.sum(), 2)
 
     # Maak het taartdiagram
-    plt.figure(figsize=(6, 4))  # Pas de grootte van de grafiek aan
+    plt.figure(figsize=(8, 6))  # Pas de grootte van de grafiek aan
     plt.pie(project_som, labels=project_som.index, autopct=lambda p: f'{p * totaal_aantal / 100:.2f}', startangle=90)
     plt.title(f'Spreiding werkuren per OCMW (Totaal: {totaal_aantal})')
     plt.axis('equal')
