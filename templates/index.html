@@ -3,7 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grafiek Weergave</title>
+    <title>Grafiek en Tabel Weergave</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .content {
+            display: flex;
+            gap: 2rem;
+        }
+        table {
+            border-collapse: collapse;
+            width: 50%;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <h1>Upload je Excel-bestand</h1>
@@ -11,12 +33,36 @@
         <input type="file" name="file">
         <input type="submit" value="Genereer Grafiek">
     </form>
-    
+
     {% if graph_url %}
-    <h2>Grafiek van de werkuren per OCMW</h2>
-    <!-- Zorg ervoor dat de src de correcte pad is naar de statische map -->
-    <img src="{{ graph_url }}" alt="Spreiding werkuren per OCMW">
+    <div class="content">
+        <!-- Grafiek -->
+        <div>
+            <h2>Grafiek van de werkuren per OCMW</h2>
+            <img src="{{ graph_url }}" alt="Spreiding werkuren per OCMW">
+        </div>
+
+        <!-- Tabel -->
+        <div>
+            <h2>Tabel van werkuren</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Werkuren</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in tabel_data %}
+                    <tr>
+                        <td>{{ row['Project'] }}</td>
+                        <td>{{ row['Werkuren'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
     {% endif %}
 </body>
 </html>
-

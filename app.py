@@ -34,12 +34,17 @@ def process_file():
     plt.axis('equal')
     plt.tight_layout()
 
-    # Sla de figuur op in de static map
-    graph_path = 'static/graph.png'
-    plt.savefig(graph_path)
+    # Sla de figuur op in geheugen
+    img = BytesIO()
+    plt.savefig(img, format='png')
     plt.close()
+    img.seek(0)
 
-    return render_template('index.html', graph_url=graph_path)
+    # Converteer de gegevens naar een lijst met dicts (geschikt voor HTML-rendering)
+    tabel_data = project_som.reset_index().rename(columns={'Benaming project': 'Project', 'Aantal': 'Werkuren'}).to_dict(orient='records')
+
+    # Geef de grafiek en tabel terug aan de pagina
+    return render_template('index.html', graph_url='/static/graph.png', tabel_data=tabel_data)
 
 @app.route('/static/graph.png')
 def graph():
