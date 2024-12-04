@@ -1,19 +1,18 @@
 from flask import Flask, request, render_template, send_file
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 from io import BytesIO
 
 app = Flask(__name__)
 
+# Maak een map om de grafieken op te slaan
+if not os.path.exists('static'):
+    os.makedirs('static')
+
 @app.route('/')
 def upload_file():
-    return '''
-    <h1>Upload je Excel-bestand</h1>
-    <form action="/process" method="post" enctype="multipart/form-data">
-        <input type="file" name="file">
-        <input type="submit" value="Genereer Grafiek">
-    </form>
-    '''
+    return render_template('index.html')
 
 @app.route('/process', methods=['POST'])
 def process_file():
@@ -35,13 +34,16 @@ def process_file():
     plt.axis('equal')
     plt.tight_layout()
 
-    # Sla de figuur op in geheugen
-    img = BytesIO()
-    plt.savefig(img, format='png')
+    # Sla de figuur op in de static map
+    graph_path = 'static/graph.png'
+    plt.savefig(graph_path)
     plt.close()
-    img.seek(0)
 
-    return send_file(img, mimetype='image/png')
+    return render_template('index.html', graph_url=graph_path)
+
+@app.route('/static/graph.png')
+def graph():
+    return send_file('static/graph.png', mimetype='image/png')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
