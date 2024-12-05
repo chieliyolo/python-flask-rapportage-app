@@ -5,24 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grafiek en Tabel Weergave</title>
     <style>
+        /* Algemeen styling */
         body {
             font-family: Calibri, Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
 
-        h1, h2 {
-            margin: 10px 0;
+        /* Navigatiebalk styling */
+        nav {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+        }
+
+        nav li {
+            display: inline;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Content styling */
         .content {
+            padding: 20px;
             display: flex;
             gap: 2rem;
             align-items: flex-start;
-            margin-top: 20px;
             flex-wrap: wrap;
         }
 
@@ -47,6 +74,7 @@
             text-align: center;
         }
 
+        /* Media query voor kleine schermen */
         @media (max-width: 768px) {
             .content {
                 flex-direction: column;
@@ -64,14 +92,24 @@
     </style>
 </head>
 <body>
-    <h1>Upload je Excel-bestand</h1>
-    <form action="/process" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" required>
-        <input type="submit" value="Genereer Grafiek">
-    </form>
+    <!-- Navigatiebalk -->
+    <nav>
+        <div>Waardenmakerij Dashboard</div>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="{{ url_for('logout') }}">Uitloggen</a></li>
+        </ul>
+    </nav>
 
-    {% if graph_url %}
+    <!-- Hoofdcontent -->
     <div class="content">
+        <h1>Welkom, {{ session['username'] }}!</h1>
+        <form action="/process" method="post" enctype="multipart/form-data">
+            <input type="file" name="file">
+            <input type="submit" value="Genereer Grafiek">
+        </form>
+
+        {% if graph_url %}
         <div>
             <h2>Grafiek van werkuren per OCMW</h2>
             <img src="{{ graph_url }}" alt="Spreiding werkuren per OCMW">
@@ -100,7 +138,7 @@
                 </tbody>
             </table>
         </div>
+        {% endif %}
     </div>
-    {% endif %}
 </body>
 </html>
