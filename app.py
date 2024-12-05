@@ -8,6 +8,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
+# Controleer of de 'static' map bestaat, anders maak je deze aan
+if not os.path.exists('static'):
+    os.makedirs('static')
+    
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key_here'  # Vervang door een sterke sleutel
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'  # SQLite-database
