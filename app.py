@@ -79,6 +79,7 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route('/')
+@app.route('/index')
 def upload_file():
     if 'user_id' not in session:
         flash('Log in om verder te gaan.', 'warning')
