@@ -92,53 +92,33 @@
     </style>
 </head>
 <body>
-    <!-- Navigatiebalk -->
-    <nav>
-        <div>Waardenmakerij Dashboard</div>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="{{ url_for('logout') }}">Uitloggen</a></li>
-        </ul>
-    </nav>
-
-    <!-- Hoofdcontent -->
-    <div class="content">
-        <h1>Welkom, {{ session['username'] }}!</h1>
-        <form action="/process" method="post" enctype="multipart/form-data">
-            <input type="file" name="file">
-            <input type="submit" value="Genereer Grafiek">
-        </form>
-
-        {% if graph_url %}
-        <div>
-            <h2>Grafiek van werkuren per OCMW</h2>
-            <img src="{{ graph_url }}" alt="Spreiding werkuren per OCMW">
-        </div>
-
-        <div>
-            <h2>Tabel van werkuren per OCMW</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Project</th>
-                        <th>Werkuren</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in tabel_data %}
-                    <tr>
-                        <td>{{ row['Project'] }}</td>
-                        <td>{{ row['Werkuren'] }}</td>
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                        <td><strong>Totaal</strong></td>
-                        <td><strong>{{ totaal_werkuren }}</strong></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        {% endif %}
-    </div>
+    {% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+{% if current_user.is_authenticated %}
+    <p>Welkom, {{ current_user.username }}!</p>
+    <img src="{{ graph_url }}" alt="Werkuren grafiek" style="max-width: 100%; height: auto; margin-top: 20px;">
+    <table style="margin: 20px auto; border-collapse: collapse; width: 100%;">
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th style="border: 1px solid #ddd; padding: 8px;">Project</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Werkuren</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in tabel_data %}
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ row.Project }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ row.Werkuren }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p style="font-weight: bold; margin-top: 20px;">Totaal werkuren: {{ totaal_werkuren }}</p>
+{% else %}
+    <p>Je bent niet ingelogd. <a href="{{ url_for('login') }}">Login</a> of <a href="{{ url_for('register') }}">Registreer</a>.</p>
+{% endif %}
+{% endblock %}
 </body>
 </html>

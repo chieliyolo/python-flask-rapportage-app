@@ -5,14 +5,25 @@
     <title>Registratie</title>
 </head>
 <body>
-    <h1>Registreren</h1>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <p>{{ form.username.label }}: {{ form.username }}</p>
-        <p>{{ form.password.label }}: {{ form.password }}</p>
-        <p>{{ form.confirm_password.label }}: {{ form.confirm_password }}</p>
-        <p>{{ form.submit }}</p>
-    </form>
-    <a href="{{ url_for('login') }}">Al een account? Log in.</a>
+   {% extends "base.html" %}
+{% block title %}Registreer{% endblock %}
+{% block content %}
+<h1>Registreer</h1>
+<form method="POST" style="margin-top: 20px;">
+    {{ form.hidden_tag() }}
+    <div style="margin-bottom: 15px;">
+        {{ form.username.label }}
+        {{ form.username }}
+    </div>
+    <div style="margin-bottom: 15px;">
+        {{ form.password.label }}
+        {{ form.password }}
+    </div>
+    <div>
+        {{ form.submit }}
+    </div>
+</form>
+<p style="margin-top: 20px;">Al een account? <a href="{{ url_for('login') }}">Login hier</a>.</p>
+{% endblock %}
 </body>
 </html>
