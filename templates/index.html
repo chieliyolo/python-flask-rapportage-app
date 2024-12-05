@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grafiek en Tabel Weergave</title>
     <style>
-        /* Algemeen font styling */
         body {
             font-family: Calibri, Arial, sans-serif;
             display: flex;
@@ -19,24 +18,21 @@
             margin: 10px 0;
         }
 
-        /* Styling van de content sectie */
         .content {
             display: flex;
             gap: 2rem;
-            align-items: flex-start; /* Zorg dat de bovenkanten uitlijnen */
+            align-items: flex-start;
             margin-top: 20px;
-            flex-wrap: wrap; /* Zorg dat de items naar een nieuwe rij gaan op kleine schermen */
+            flex-wrap: wrap;
         }
 
-        /* Grafiek styling */
         img {
             max-width: 100%;
             height: auto;
-            width: 40vw; /* Breedte relatief aan viewport breedte */
-            min-width: 300px; /* Zorg dat de grafiek niet te klein wordt */
+            width: 40vw;
+            min-width: 300px;
         }
 
-        /* Tabel styling */
         table {
             border-collapse: collapse;
             width: 50%;
@@ -51,7 +47,6 @@
             text-align: center;
         }
 
-        /* Mediaquery voor kleinere schermen */
         @media (max-width: 768px) {
             .content {
                 flex-direction: column;
@@ -59,11 +54,11 @@
             }
 
             img {
-                width: 80%; /* Grafiek neemt meer ruimte in op kleinere schermen */
+                width: 80%;
             }
 
             table {
-                width: 90%; /* Tabel wordt smaller */
+                width: 90%;
             }
         }
     </style>
@@ -71,19 +66,17 @@
 <body>
     <h1>Upload je Excel-bestand</h1>
     <form action="/process" method="post" enctype="multipart/form-data">
-        <input type="file" name="file">
+        <input type="file" name="file" required>
         <input type="submit" value="Genereer Grafiek">
     </form>
 
     {% if graph_url %}
     <div class="content">
-        <!-- Grafiek -->
         <div>
             <h2>Grafiek van werkuren per OCMW</h2>
             <img src="{{ graph_url }}" alt="Spreiding werkuren per OCMW">
         </div>
 
-        <!-- Tabel -->
         <div>
             <h2>Tabel van werkuren per OCMW</h2>
             <table>
@@ -100,6 +93,10 @@
                         <td>{{ row['Werkuren'] }}</td>
                     </tr>
                     {% endfor %}
+                    <tr>
+                        <td><strong>Totaal</strong></td>
+                        <td><strong>{{ totaal_werkuren }}</strong></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
