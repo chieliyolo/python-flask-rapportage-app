@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
@@ -8,40 +9,39 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
-# Controleer of de 'static' map bestaat, anders maak je deze aan
-if not os.path.exists('static'):
-    os.makedirs('static')
-    
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key_here'  # Vervang door een sterke sleutel
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'  # SQLite-database
+app.config['SECRET_KEY'] = 'your_secret_key_here'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 
 # Database model voor gebruikers
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
 
-# Loginformulier
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+# Forms
 class LoginForm(FlaskForm):
     username = StringField('Gebruikersnaam', validators=[DataRequired(), Length(min=3, max=150)])
     password = PasswordField('Wachtwoord', validators=[DataRequired()])
     submit = SubmitField('Login')
 
-# Registratieformulier
 class RegisterForm(FlaskForm):
     username = StringField('Gebruikersnaam', validators=[DataRequired(), Length(min=3, max=150)])
     password = PasswordField('Wachtwoord', validators=[DataRequired()])
     confirm_password = PasswordField('Bevestig Wachtwoord', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Registreer')
 
-# Maak de database aan
-with app.app_context():
-    db.create_all()
-
+# Routes
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
@@ -65,8 +65,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user and check_password_hash(user.password, form.password.data):
-            session['user_id'] = user.id
-            session['username'] = user.username
+            login_user(user)
             flash('Succesvol ingelogd.', 'success')
             return redirect(url_for('upload_file'))
         flash('Ongeldige inloggegevens.', 'danger')
@@ -74,25 +73,19 @@ def login():
 
 @app.route('/logout')
 def logout():
-    session.clear()
+    logout_user()
     flash('Je bent uitgelogd.', 'info')
     return redirect(url_for('login'))
 
 @app.route('/')
 @app.route('/index')
+@login_required
 def upload_file():
-    print("Route /index of / aangeroepen")
-    if 'user_id' not in session:
-        flash('Log in om verder te gaan.', 'warning')
-        return redirect(url_for('login'))
     return render_template('index.html')
 
 @app.route('/process', methods=['POST'])
+@login_required
 def process_file():
-    if 'user_id' not in session:
-        flash('Log in om deze actie uit te voeren.', 'warning')
-        return redirect(url_for('login'))
-
     file = request.files['file']
     df = pd.read_excel(file)
 

@@ -6,6 +6,9 @@
 <h1>Dashboard</h1>
 {% if current_user.is_authenticated %}
     <p>Welkom, {{ current_user.username }}!</p>
+{% else %}
+    <p>Je bent niet ingelogd. <a href="{{ url_for('login') }}">Login</a></p>
+{% endif %}
     <img src="{{ graph_url }}" alt="Werkuren grafiek" style="max-width: 100%; height: auto; margin-top: 20px;">
     <table style="margin: 20px auto; border-collapse: collapse; width: 100%;">
         <thead>
