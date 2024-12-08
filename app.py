@@ -81,6 +81,7 @@ def logout():
 @app.route('/')
 @app.route('/index')
 def upload_file():
+    print("Route /index of / aangeroepen")
     if 'user_id' not in session:
         flash('Log in om verder te gaan.', 'warning')
         return redirect(url_for('login'))
