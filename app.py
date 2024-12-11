@@ -80,7 +80,7 @@ def logout():
 @app.route('/')
 @app.route('/index')
 @login_required
-def upload_file():
+def index():
     return render_template('index.html')
 
 @app.route('/process', methods=['POST'])
