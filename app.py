@@ -9,11 +9,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
+# App configuratie
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key_here'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Database en login setup
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -25,6 +27,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
 
+# LoginManager gebruikerslaadfunctie
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -57,6 +60,9 @@ def register():
         db.session.commit()
         flash('Registratie succesvol. Log in.', 'success')
         return redirect(url_for('login'))
+    if request.method == 'POST':
+        flash('Formulier niet correct ingevuld.', 'danger')
+        print(form.errors)  # Voor debugging
     return render_template('register.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -67,8 +73,11 @@ def login():
         if user and check_password_hash(user.password, form.password.data):
             login_user(user)
             flash('Succesvol ingelogd.', 'success')
-            return redirect(url_for('upload_file'))
+            return redirect(url_for('index'))
         flash('Ongeldige inloggegevens.', 'danger')
+    if request.method == 'POST':
+        flash('Formulier niet correct ingevuld.', 'danger')
+        print(form.errors)  # Voor debugging
     return render_template('login.html', form=form)
 
 @app.route('/logout')
@@ -113,4 +122,6 @@ def process_file():
     return render_template('index.html', graph_url='/static/graph.png', tabel_data=tabel_data, totaal_werkuren=totaal_werkuren)
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(host='0.0.0.0', port=5000, debug=True)
